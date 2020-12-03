@@ -8,14 +8,12 @@ const url_1 = __importDefault(require("url"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
 const mime_1 = __importDefault(require("mime"));
-const controllers_1 = __importDefault(require("./controllers"));
 const ROOT = path_1.default.resolve(process.argv[2] || '.');
 const DIST_DIR = './dist/tomtiao.github.io';
 console.log(`Static root dir: ${ROOT}`);
 const server = http_1.default.createServer(async (request, response) => {
     const pathname = url_1.default.parse(request.url || '.').pathname || '.';
     const filepath = path_1.default.join(ROOT, DIST_DIR, pathname);
-    console.log(`Process ${request.method} ${request.url}`);
     try {
         const stats = await fs_1.promises.stat(filepath);
         if (stats.isFile()) {
@@ -26,7 +24,9 @@ const server = http_1.default.createServer(async (request, response) => {
             response.end(file);
         }
         else if (stats.isDirectory()) {
-            controllers_1.default(request, response);
+            const index = await fs_1.promises.readFile(`${filepath}index.html`);
+            response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.end(index);
         }
         else {
             throw new Error('404 not found');

@@ -1,7 +1,7 @@
 import http from 'http';
 import url from 'url';
 import path from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs} from 'fs';
 import mime from 'mime';
 
 const ROOT = path.resolve(process.argv[2] || '.');
@@ -30,13 +30,13 @@ const server = http.createServer(async (request, response) => {
             throw new Error('404 not found');
         }
     } catch (error) {
-        console.log(`404 ${request.url}`);
+        console.log(`there's a error with ${request.url}, ${error}`);
         response.writeHead(404);
         response.end('404 not found');
     }
 });
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 server.listen(port);
 

@@ -3,7 +3,7 @@ import path from 'path';
 import Router from './router.js';
 import { ControllerObject } from './definition/controller.js';
 
-export default function register(router: Router): void {
+export default function registerController(router: Router): void {
     const ROOT = path.resolve(process.argv[2] || '.');
     const CONTROLLERS_DIR = '/dist/controllers';
 

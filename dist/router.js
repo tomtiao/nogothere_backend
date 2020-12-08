@@ -27,7 +27,7 @@ export default class Router {
         if (!this.get_method[request.url] && !this.post_method[request.url]) {
             return new Promise((res, rej) => {
                 res({
-                    'status': 'ongoing',
+                    'status': 'pending',
                     'request': request,
                     'response': response
                 });
@@ -45,7 +45,7 @@ export default class Router {
         }
         return new Promise((res, rej) => {
             res({
-                'status': 'fulfilled',
+                'status': 'resolved',
                 'request': request,
                 'response': response
             });

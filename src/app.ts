@@ -1,21 +1,21 @@
 import http from 'http';
 import path from 'path';
 import Router from './router.js';
-import register from './register.js';
+import registerController from './registerController.js';
 import staticFiles from './static-files.js';
 
 const ROOT = path.resolve(process.argv[2] || '.');
 
 console.log(`Static root dir: ${ROOT}`);
 const router = new Router();
-register(router);
+registerController(router);
 
 const server = http.createServer(async (request, response) => {
     console.log(`Process ${request.method} ${request.url}`);
 
     try {
         const res_obj = await router.route(request, response);
-        if (res_obj['status'] === 'ongoing') {
+        if (res_obj['status'] === 'pending') {
             await staticFiles(request, response);
         }
     } catch (error) {

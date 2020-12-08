@@ -8,7 +8,7 @@ const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';
 const STATIC_FILES = '/asserts/';
 
-export default async function staticFiles(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('ongoing' | 'fulfilled'), 'request': IncomingMessage, 'response': ServerResponse }> {
+export default async function staticFiles(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
     const rpath = url.parse(request.url || '/').path || '/';
     const file_path = path.join(ROOT, FRONTEND_DIR, rpath);
 
@@ -34,7 +34,7 @@ export default async function staticFiles(request: IncomingMessage, response: Se
 
     return new Promise((res, rej) => {
         res({
-            'status': 'fulfilled',
+            'status': 'resolved',
             'request': request,
             'response': response
         })

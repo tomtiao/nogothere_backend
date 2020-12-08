@@ -32,7 +32,7 @@ export default async function staticFiles(request, response) {
     }
     return new Promise((res, rej) => {
         res({
-            'status': 'fulfilled',
+            'status': 'resolved',
             'request': request,
             'response': response
         });

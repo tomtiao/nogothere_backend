@@ -17,7 +17,7 @@ export default class Router {
         }
     }
 
-    public route(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('ongoing' | 'fulfilled'), 'request': IncomingMessage, 'response': ServerResponse }> {
+    public route(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
         if ((request.method !== 'GET') && (request.method !== 'POST')) {
             response.writeHead(405);
             response.end(`unsupported method ${request.method}`);
@@ -34,7 +34,7 @@ export default class Router {
         if (!this.get_method[request.url] && !this.post_method[request.url]) {
             return new Promise((res, rej) => {
                 res({
-                    'status': 'ongoing',
+                    'status': 'pending',
                     'request': request,
                     'response': response
                 })
@@ -54,7 +54,7 @@ export default class Router {
 
         return new Promise((res, rej) => {
             res({
-                'status': 'fulfilled',
+                'status': 'resolved',
                 'request': request,
                 'response': response
             })

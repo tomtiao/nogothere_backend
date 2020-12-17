@@ -6,7 +6,7 @@ import mime from "mime";
 
 const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';
-const STATIC_FILES = '/asserts/';
+const STATIC_FILES = '/assets/';
 
 export default async function staticFiles(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
     const rpath = url.parse(request.url || '/').path || '/';
@@ -23,12 +23,13 @@ export default async function staticFiles(request: IncomingMessage, response: Se
         }
     } catch (error) {
         try {
-            const index = await fs.readFile(`${file_path}index.html`);
+            const index = await fs.readFile(path.join(file_path, 'index.html'));
             response.writeHead(200, { 'Content-Type': 'text/html' });
             response.end(index);
         } catch (error) {
             response.writeHead(404);
             response.end(`404 NOT FOUND`);
+            console.error(error);
         }
     }
 

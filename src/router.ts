@@ -18,12 +18,16 @@ export default class Router {
     }
 
     public route(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
-        if ((request.method !== 'GET') && (request.method !== 'POST')) {
-            response.writeHead(405);
-            response.end(`unsupported method ${request.method}`);
-            throw new Error(`unsupported method ${request.method}`);
+        function isSupportedMethod(request: IncomingMessage, response: ServerResponse) {
+            if ((request.method !== 'GET') && (request.method !== 'POST')) {
+                response.writeHead(405);
+                response.end(`unsupported method ${request.method}`);
+                throw new Error(`unsupported method ${request.method}`);
+            }
         }
 
+        isSupportedMethod(request, response);
+        
         if (!request.url) {
             response.writeHead(404);
             response.end('could not handle request url');

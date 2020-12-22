@@ -15,9 +15,9 @@ const server = http.createServer(async (request, response) => {
     console.log(`Process ${request.method} ${request.url}`);
 
     try {
-        const request_obj = await staticFiles(request, response);
+        let request_obj = await staticFiles(request, response);
         if (request_obj.status !== 'resolved') {
-            router.route(request, response);
+            request_obj = await router.route(request, response);
         }
         if (request_obj.status !== 'resolved') {
             fileNotFound(request, response);

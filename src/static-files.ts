@@ -3,6 +3,7 @@ import path from 'path';
 import url from 'url';
 import { promises as fs } from 'fs';
 import mime from "mime";
+import fileNotFound from "./fileNotFound";
 
 const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';
@@ -19,7 +20,7 @@ export default async function staticFiles(request: IncomingMessage, response: Se
             response.writeHead(200, { 'Content-Type': file_mime });
             response.end(file);
         } else { // not in static files dir, pass request to next func
-            return new Promise((res, rej) => {
+            return new Promise((res) => {
                 res({
                     'status': 'pending',
                     'request': request,
@@ -27,13 +28,16 @@ export default async function staticFiles(request: IncomingMessage, response: Se
                 })
             });
         }
-    } catch (error) { // is in static file dir, but something goes wrong
-        response.writeHead(404);
-        response.end();
+    } catch (error) { // seems not requested file in static files, dispatch request to not found file handler
+        try {
+            await fileNotFound(request, response);
+        } catch (error) {
+            console.error(`There is something wrong with static-files.js, error: ${error}`);
+        }
     }
 
     // successfully handled request. mark request as 'resolved'
-    return new Promise((res, rej) => {
+    return new Promise((res) => {
         res({
             'status': 'resolved',
             'request': request,

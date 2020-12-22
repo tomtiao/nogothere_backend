@@ -3,7 +3,7 @@ import path from 'path';
 import url from 'url';
 import { promises as fs } from 'fs';
 import mime from "mime";
-import fileNotFound from "./fileNotFound";
+import fileNotFound from "./fileNotFound.js";
 
 const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';

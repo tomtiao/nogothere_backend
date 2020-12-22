@@ -18,21 +18,22 @@ export default async function staticFiles(request: IncomingMessage, response: Se
             const file_mime = mime.getType(file_path) || 'text/plain';
             response.writeHead(200, { 'Content-Type': file_mime });
             response.end(file);
-        } else {
-            throw new Error(`could found ${rpath}`);
+        } else { // not in static files dir, pass request to next func
+            return new Promise((res, rej) => {
+                res({
+                    'status': 'pending',
+                    'request': request,
+                    'response': response
+                })
+            });
         }
     } catch (error) {
-        try {
-            const index = await fs.readFile(path.join(file_path, 'index.html'));
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            response.end(index);
-        } catch (error) {
-            response.writeHead(404);
-            response.end(`404 NOT FOUND`);
-            console.error(error);
-        }
+        response.writeHead(404);
+        response.end(`404 NOT FOUND`);
+        console.error(error);
     }
 
+    // successfully handled request. mark request as 'resolved'
     return new Promise((res, rej) => {
         res({
             'status': 'resolved',

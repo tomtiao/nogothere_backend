@@ -1,4 +1,3 @@
 export default interface TemplateData {
-    'title'?: string;
-    'content'?: string;
+    [key: string]: string;
 }

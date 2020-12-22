@@ -1,4 +1,4 @@
-import TemplateData from "./definition/template_data";
+import TemplateData from "./definition/template_data.js";
 
 export default class Template {
     /**

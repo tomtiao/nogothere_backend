@@ -27,10 +27,9 @@ export default async function staticFiles(request: IncomingMessage, response: Se
                 })
             });
         }
-    } catch (error) {
+    } catch (error) { // is in static file dir, but something goes wrong
         response.writeHead(404);
-        response.end(`404 NOT FOUND`);
-        console.error(error);
+        response.end();
     }
 
     // successfully handled request. mark request as 'resolved'

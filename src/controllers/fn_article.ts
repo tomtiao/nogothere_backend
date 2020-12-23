@@ -1,7 +1,7 @@
 import path from "path";
-import { ControllerFunc } from "../definition/controller";
+import { ControllerFunc } from "../definition/controller.js";
 import { promises as fs } from 'fs';
-import fileNotFound from "../fileNotFound";
+import fileNotFound from "../fileNotFound.js";
 const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';
 const ARTICLES = '/articles';

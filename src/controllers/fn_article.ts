@@ -1,6 +1,6 @@
 import path from "path";
 import { ControllerFunc } from "../definition/controller.js";
-import { promises as fs } from 'fs';
+import fs from 'fs/promises';
 import fileNotFound from "../fileNotFound.js";
 const ROOT = path.resolve(process.argv[2] || '.');
 const FRONTEND_DIR = '/dist/tomtiao.github.io';
@@ -12,7 +12,7 @@ const fn_article: ControllerFunc = async function (request, response): Promise<v
     try {
         const articles_xmls = await fs.readdir(articles_path);
         const articles_data: ({ 'fileName': string, 'content': string })[] = [];
-        articles_xmls.forEach(async xml => {
+        for (const xml of articles_xmls) {
             try {
                 const file = await fs.readFile(path.join(ROOT, FRONTEND_DIR, ARTICLES, xml));
                 articles_data.push({
@@ -21,9 +21,12 @@ const fn_article: ControllerFunc = async function (request, response): Promise<v
                 });
             } catch (error) {
                 response.writeHead(500)
-                    .end();
+                        .end();
+                console.error(`There is a problem with fn_article.js, error: ${error}`);
+                return;
             }
-        });
+        }
+    
         response.writeHead(200, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({
             'articles': articles_data

@@ -20,7 +20,7 @@ const server = http.createServer(async (request, response) => {
             request_obj = await router.route(request, response);
         }
         if (request_obj.status !== 'resolved') {
-            fileNotFound(request, response);
+            await fileNotFound(request, response);
         }
     } catch (error) {
         console.error(error);

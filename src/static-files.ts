@@ -6,7 +6,7 @@ import mime from "mime";
 import fileNotFound from "./fileNotFound.js";
 
 const ROOT = path.resolve(process.argv[2] || '.');
-const FRONTEND_DIR = '/dist/tomtiao.github.io';
+const FRONTEND_DIR = path.join('../', 'tomtiao.github.io');
 const STATIC_FILES = '/assets/';
 
 export default async function staticFiles(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
@@ -30,7 +30,7 @@ export default async function staticFiles(request: IncomingMessage, response: Se
         }
     } catch (error) { // seems not requested file in static files, dispatch request to not found file handler
         try {
-            await fileNotFound(request, response);
+            await fileNotFound(request, response, false);
         } catch (error) {
             console.error(`There is something wrong with static-files.js, error: ${error}`);
         }

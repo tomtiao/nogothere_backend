@@ -3,7 +3,7 @@ import { ControllerFunc } from "../definition/controller.js";
 import fs from 'fs/promises';
 import fileNotFound from "../fileNotFound.js";
 const ROOT = path.resolve(process.argv[2] || '.');
-const FRONTEND_DIR = '/dist/tomtiao.github.io';
+const FRONTEND_DIR = path.join('../', 'tomtiao.github.io');
 const ARTICLES = '/articles';
 
 const fn_article: ControllerFunc = async function (request, response): Promise<void> {
@@ -33,7 +33,7 @@ const fn_article: ControllerFunc = async function (request, response): Promise<v
         }));
     } catch (error) {
         console.error(error);
-        await fileNotFound(request, response);
+        await fileNotFound(request, response, false);
     }
 };
 

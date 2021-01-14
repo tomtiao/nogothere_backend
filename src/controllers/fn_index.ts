@@ -3,7 +3,7 @@ import { ControllerFunc } from '../definition/controller.js';
 import path from 'path';
 
 const ROOT = path.resolve(process.argv[2] || '.');
-const FRONTEND_DIR = '/dist/tomtiao.github.io';
+const FRONTEND_DIR = path.join('../', 'tomtiao.github.io');
 
 const fn_index: ControllerFunc = async function (request, response): Promise<void> {
     const index_path = path.join(ROOT, FRONTEND_DIR);

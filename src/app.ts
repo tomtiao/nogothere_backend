@@ -4,6 +4,7 @@ import Router from './router.js';
 import registerController from './registerController.js';
 import staticFiles from './static-files.js';
 import fileNotFound from './fileNotFound.js';
+import { RequestStatus } from './definition/requestStatus.js';
 
 const ROOT = path.resolve(process.argv[2] || '.');
 
@@ -16,10 +17,10 @@ const server = http.createServer(async (request, response) => {
 
     try {
         let request_obj = await staticFiles(request, response);
-        if (request_obj.status !== 'resolved') {
+        if (request_obj.status !== RequestStatus.RESOLVED) {
             request_obj = await router.route(request, response);
         }
-        if (request_obj.status !== 'resolved') {
+        if (request_obj.status !== RequestStatus.RESOLVED) {
             await fileNotFound(request, response, true);
         }
     } catch (error) {

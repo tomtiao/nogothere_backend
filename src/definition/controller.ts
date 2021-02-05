@@ -4,6 +4,4 @@ export interface ControllerFunc {
     (request: IncomingMessage, response: ServerResponse): void;
 }
 
-export interface ControllerObject {
-    [url: string]: ControllerFunc;
-}
+export type ControllerObject = Map<string, ControllerFunc>;

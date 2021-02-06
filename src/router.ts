@@ -1,23 +1,26 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { ControllerFunc, ControllerObject } from "./definition/controller.js";
+import { RequestObject } from "./definition/requestObject.js";
+import { RequestStatus } from "./definition/requestStatus.js";
+import url from 'url';
 
 export default class Router {
-    private get_method: ControllerObject = {};
-    private post_method: ControllerObject = {};
+    private get_method: ControllerObject = new Map<string, ControllerFunc>();
+    private post_method: ControllerObject = new Map<string, ControllerFunc>();
 
     public get(path: string, func: ControllerFunc): void {
-        if (!this.get_method[path]) {
-            this.get_method[path] = func;
+        if (!this.get_method.get(path)) {
+            this.get_method.set(path, func);
         }
     }
 
     public post(path: string, func: ControllerFunc): void {
-        if (!this.post_method[path]) {
-            this.post_method[path] = func;
+        if (!this.post_method.get(path)) {
+            this.post_method.set(path, func);
         }
     }
 
-    public route(request: IncomingMessage, response: ServerResponse): Promise<{ 'status': ('pending' | 'resolved'), 'request': IncomingMessage, 'response': ServerResponse }> {
+    public route(request: IncomingMessage, response: ServerResponse): Promise<RequestObject> {
         function isSupportedMethod(request: IncomingMessage, response: ServerResponse) {
             if ((request.method !== 'GET') && (request.method !== 'POST')) {
                 response.writeHead(405);
@@ -29,39 +32,37 @@ export default class Router {
         isSupportedMethod(request, response);
         
         if (!request.url) {
-            response.writeHead(404);
+            response.writeHead(500);
             response.end('could not handle request url');
             throw new Error('could not handle request url');
         }
 
+        const pathname = url.parse(request.url).pathname as string;
+
         // if no specific func, can't handle, pass to next func
-        if (!this.get_method[request.url] && !this.post_method[request.url]) {
-            return new Promise((res, rej) => {
-                res({
-                    'status': 'pending',
-                    'request': request,
-                    'response': response
-                })
+        if (!this.get_method.get(pathname) && !this.post_method.get(pathname)) {
+            return Promise.resolve({
+                status: RequestStatus.PENDING,
+                request: request,
+                response: response
             });
         }
 
         switch (request.method) {
             case 'GET':
-                this.get_method[request.url](request, response);
+                (this.get_method.get(pathname) as ControllerFunc)(request, response);
                 break;
             case 'POST':
-                this.post_method[request.url](request, response);
+                (this.post_method.get(pathname) as ControllerFunc)(request, response);
                 break;
             default:
                 throw new Error(`unsupported method ${request.method}`);
         }
 
-        return new Promise((res, rej) => {
-            res({
-                'status': 'resolved',
-                'request': request,
-                'response': response
-            })
+        return Promise.resolve({
+            status: RequestStatus.RESOLVED,
+            request: request,
+            response: response
         });
     }
 }

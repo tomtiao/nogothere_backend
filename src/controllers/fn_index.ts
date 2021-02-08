@@ -15,8 +15,8 @@ const fn_index: ControllerFunc = async function (request, response): Promise<voi
         response.writeHead(200, { 'Content-Type': 'text/html' });
         response.end(base_html);
     } catch (error) {
-        response.writeHead(500);
-        response.end();
+        response.writeHead(404)
+            .end();
         console.error(error);
     }
 }
